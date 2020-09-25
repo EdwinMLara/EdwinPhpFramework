@@ -28,6 +28,8 @@
 
         public function update($arguments,$id){
             $typeClass = ucfirst($this->typeService);
+            $object = new $typeClass($arguments);
+            return $this->consulta->updateByTable($this->typeService,$object,$id);
         }
 
         public function delete($id){
