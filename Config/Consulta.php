@@ -46,12 +46,18 @@ class Consulta extends ConexionBaseDatos{
         }
     }
 
-    public function updateByTable($table,$obj){
+    public function updateByTable($table,$obj,$id){
         $query = "UPDATE ".$this->deleteEspecialCharacters($table)." SET ";
+        $where = "WHERE ";
+        $con = 0;
         foreach($obj as $property => $value){
+            if($con == 0){
+                $where .= $property." = ".$id;
+            }
             $query .= $property." = ".$value." ,";
         }
         $query = substr($query, 0, -1);
+        $query .= $query.$where;
         $this->con->query($query);
         
         return ($this->con->affected_rows() === 1) ? true : false;
