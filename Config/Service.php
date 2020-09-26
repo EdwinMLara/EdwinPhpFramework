@@ -1,4 +1,5 @@
 <?php
+|   /**Esta clase genera un crud general, donde se crea un conexion a la clase consulta */
     class Service implements RepositoryCrud{
         public $typeService;
         public $consulta;
@@ -29,14 +30,13 @@
         public function update($arguments,$id){
             $typeClass = ucfirst($this->typeService);
             $object = new $typeClass($arguments);
-            return $this->consulta->updateByTable($this->typeService,$object,$id);
+            return $this->consulta->updateByTable($this->typeService,$object,$id);  
         }
 
         public function delete($id){
             return $this->consulta->deleteByTable($this->typeService,$id);
         }
 
-        
 
     }
 ?>
