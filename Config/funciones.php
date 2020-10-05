@@ -1,6 +1,7 @@
 <?php
     spl_autoload_register(function($className){
-        $path = strtolower($className).".php";
+        $path = $className.".php";
+        echo "Ruta    ".$path."<br/>";
         if(file_exists($path)){
             require_once($path);
         }else{

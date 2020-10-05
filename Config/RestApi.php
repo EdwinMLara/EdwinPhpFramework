@@ -1,4 +1,5 @@
 <?php
+    require_once("Rest.php");
     class RestApi extends Rest{
         public function __construct(){
             parent::__construct();  

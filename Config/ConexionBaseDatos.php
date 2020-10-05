@@ -1,5 +1,5 @@
 <?php
-    require_once('constantesDB');
+    require_once('constantesDB.php');
     class ConexionBaseDatos{
         protected $con;
         public $query;

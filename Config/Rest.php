@@ -1,10 +1,11 @@
 <?php
-    require_once('constantsRestApi.php');
+    require_once('constantesRestApi.php');
     class Rest{
         protected $request;
         protected $serviceName;
         protected $param;
         protected $userid;
+        protected $activeToken = true;
 
         public function __construct(){
             if($_SERVER['REQUEST_METHOD'] !== 'POST'){
@@ -14,9 +15,9 @@
             $this->request = stream_get_contents($handler);
             $this->validateRequest();
 
-            if('generateToken' != $this->serviceName){
+            /*if(('generateToken' != $this->serviceName) && $this->activeToken){
                 $this->validateToken();
-            }                        
+            }*/                        
         }
 
         public function validateRequest(){
@@ -38,9 +39,9 @@
             $this->param = $data["param"];
         }
 
-        public function processApi(){
-            $api = new API;
-            $rMethod = new ReflectionMethod('API',$this->serviceName);
+        public function processApi($API){
+            $api = new $API();
+            $rMethod = new ReflectionMethod('InsoelUsuariosApi',$this->serviceName);
             if(!method_exists($api,$this->serviceName)){
                 $this->throwError(API_DOST_NOT_EXIST,"Api does not exist.");
             }

@@ -1,5 +1,7 @@
 <?php
-|   /**Esta clase genera un crud general, donde se crea un conexion a la clase consulta */
+    require_once("RepositoryCrud.php");
+    require_once("Consulta.php");
+   /**Esta clase genera un crud general, donde se crea un conexion a la clase consulta */
     class Service implements RepositoryCrud{
         public $typeService;
         public $consulta;

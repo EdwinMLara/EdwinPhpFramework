@@ -1,4 +1,5 @@
 <?php
+require_once("ConexionBaseDatos.php");
 class Consulta extends ConexionBaseDatos{
     function __construct(){
         parent::__construct();
