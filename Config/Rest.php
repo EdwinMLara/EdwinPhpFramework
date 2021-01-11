@@ -15,9 +15,9 @@
             $this->request = stream_get_contents($handler);
             $this->validateRequest();
 
-            /*if(('generateToken' != $this->serviceName) && $this->activeToken){
+            if('generateToken' != $this->serviceName){
                 $this->validateToken();
-            }*/                        
+            }                        
         }
 
         public function validateRequest(){
@@ -39,14 +39,17 @@
             $this->param = $data["param"];
         }
 
-        public function processApi($API){
-            $api = new $API();
-            $rMethod = new ReflectionMethod('InsoelUsuariosApi',$this->serviceName);
-            if(!method_exists($api,$this->serviceName)){
+        public function processApi(){
+            try{
+                $api = new InsoelUsuariosApi();
+                $rMethod = new ReflectionMethod("InsoelUsuariosApi",$this->serviceName);
+                if(!method_exists($api,$this->serviceName)){
+                    $this->throwError(API_DOST_NOT_EXIST,"Api does not exist.");
+                }
+                $rMethod->invoke($api); 
+            }catch(Exception $e){
                 $this->throwError(API_DOST_NOT_EXIST,"Api does not exist.");
-            }
-
-            $rMethod->invoke($api);  
+            } 
         }
 
         public function validateParameter($fieldName,$value,$dataType,$required = true){
