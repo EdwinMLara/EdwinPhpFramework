@@ -6,9 +6,9 @@ class Consulta extends ConexionBaseDatos{
     }
 
     public function tableExists($table){
-        $table_exists = $this->con->query('SHOW TABLES FROM '.DB_NAME.' LIKE "'.$this->con->deleteEspecialCharacters($table).'"');
+        $table_exists = $this->con->query('SHOW TABLES FROM '.DB_NAME.' LIKE "'.$this->deleteEspecialCharacters($table).'"');
         if($table_exists){
-            if($this->con->num_rows($table_exists > 0)){
+            if($table_exists->num_rows > 0){
                 return true;
             }else{
                 return false;
@@ -72,6 +72,16 @@ class Consulta extends ConexionBaseDatos{
             $this->con->query($query);
             
             return ($this->con->affected_rows() === 1) ? true : false;
+        }
+    }
+
+    public function findByFieldTable($table,$field,$value){
+        if($this->tableExists($table)){
+            $query = "SELECT * FROM ".$this->deleteEspecialCharacters($table);
+            $query .= " WHERE ".$this->deleteEspecialCharacters($field)." = '".$this->deleteEspecialCharacters($value)."'";
+            
+            $results = $this->con->query($query);
+            return $this->loopQuery($results);
         }
     }
 }
