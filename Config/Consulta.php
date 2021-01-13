@@ -16,6 +16,19 @@ class Consulta extends ConexionBaseDatos{
         }
     }
 
+    public function propertyTableExists($table,$column){
+        if($this->tableExists($table)){
+            $query = "SHOW COLUMNS FROM ".$this->deleteEspecialCharacters($table)." like '".$this->deleteEspecialCharacters($column)."'";
+            $property_table_exists = $this->con->query($query);            
+            if($property_table_exists->num_rows > 0)
+                return true;
+            else
+                return false;
+        }else{
+            return false;
+        }
+    }
+
     public function findByQuery($query){
         $results = $this->con->query($query);
         return $this->loopQuery($results);
@@ -24,7 +37,7 @@ class Consulta extends ConexionBaseDatos{
     public function insertByTable($table,$obj){
         if($this->tableExists($table,$obj)){
             $query = "INSERT INTO ".$this->deleteEspecialCharacters($table);
-            $query_properties = "(";
+            $query_properties = " (";
             $query_values = "(";
             foreach($obj as $property => $value){
                 if(strcmp($value,'autoincrement') == 0) continue;
@@ -35,8 +48,7 @@ class Consulta extends ConexionBaseDatos{
             $query_values = substr($query_values, 0, -1);
             $query = $query.$query_properties.") VALUES ".$query_values.")";
             $this->con->query($query);
-            
-            return ($this->con->affected_rows() === 1) ? true : false;
+            return ($this->con->affected_rows === 1) ? true : false;
         }
     }
 
@@ -77,11 +89,17 @@ class Consulta extends ConexionBaseDatos{
 
     public function findByFieldTable($table,$field,$value){
         if($this->tableExists($table)){
-            $query = "SELECT * FROM ".$this->deleteEspecialCharacters($table);
-            $query .= " WHERE ".$this->deleteEspecialCharacters($field)." = '".$this->deleteEspecialCharacters($value)."'";
+            if($this->propertyTableExists($table,$field)){
+                $query = "SELECT * FROM ".$this->deleteEspecialCharacters($table);
+                $query .= " WHERE ".$this->deleteEspecialCharacters($field)." = '".$this->deleteEspecialCharacters($value)."'";
             
-            $results = $this->con->query($query);
-            return $this->loopQuery($results);
+                $results = $this->con->query($query);
+                return $this->loopQuery($results);
+            }else{
+                return null;
+            }
+            
+            
         }
     }
 }
