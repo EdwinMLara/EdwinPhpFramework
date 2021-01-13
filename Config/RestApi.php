@@ -18,8 +18,7 @@
             $username = $this->validateParameter('username',$this->param["username"],STRING);
             $password = $this->validateParameter('password',$this->param["password"],STRING);
                   
-            $usuario = $this->service->getByField("usuario",$username);
-
+            $usuario = $this->service->getByField("username",$username);
             try{
                 $payload = [
                     'iat' => time(),
