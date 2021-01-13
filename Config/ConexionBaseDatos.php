@@ -39,7 +39,6 @@
         }
 
         public function loopQuery($results){
-            
             $arrays_atributtes = array();
 
             while ($result = $results->fetch_assoc()) {
