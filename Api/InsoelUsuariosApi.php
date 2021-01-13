@@ -12,7 +12,7 @@
         private $key;
         public function __construct(){
             parent::__construct("usuarios");
-            $this->key = "insoelUserApiKey";
+            $this->key = "insoelKey";
         }
 
         /**Este metodo se utiliza para agregar un usuario nuevo a la base de datos
@@ -25,15 +25,25 @@
         public function addUser(){
             $username = $this->validateParameter('username',$this->param["username"],STRING);
             $password = $this->validateParameter('password',$this->param["password"],STRING);
- 
+            $typeCount = $this->validateParameter('typeCount',$this->param["typeCount"],INTEGER);
+
             $encrytedPassword = Encrytation::encrypt($password,$this->key);
-            $this->returnResponse('SUCESS_RESPONSE',$encrytedPassword);
+            $arguments = array($username,$encrytedPassword,$typeCount);
+            if($this->service->create($arguments)){
+                $this->returnResponse('SUCESS_RESPONSE',"An user has been created");
+            }else{
+                $this->throwError('CREATED_ERROR',"An has been ocurred to create the object");
+            }
 
         }
 
         public function getUsers(){
-            $usuarios = $service->getAll();
-            echo json_encode($usuarios);
+            $usuarios = $this->service->getAll();
+            $this->returnResponse('SUCCES_RESPONSE',$usuarios);
         }
+
+        public function updateUser(){}
+
+        public function deleteUser(){}
     }
 ?>
