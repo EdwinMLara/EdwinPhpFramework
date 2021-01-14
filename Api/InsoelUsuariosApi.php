@@ -15,7 +15,7 @@
             $this->key = "insoelKey";
         }
 
-        /**Este metodo se utiliza para agregar un usuario nuevo a la base de datos
+        /**Este método se utiliza para agregar un usuario nuevo a la base de datos
          * primero se validan los parametros utlizando el metodo de la clase rest, con la finalidad 
          * de que ambos parametros sean del tipo cadena
          * 
@@ -23,27 +23,59 @@
          */
 
         public function addUser(){
+            /**Se obtienen  los parametros obtenidos del cuerpo de la petecion los cuales,
+             * estan dentro del arrelgo de parametros
+             */
             $username = $this->validateParameter('username',$this->param["username"],STRING);
             $password = $this->validateParameter('password',$this->param["password"],STRING);
             $typeCount = $this->validateParameter('typeCount',$this->param["typeCount"],INTEGER);
 
+            /**se encrypta el password utilizando funciones de openssl */
             $encrytedPassword = Encrytation::encrypt($password,$this->key);
+
+            /**Se crea un arreglo de parámetros ya que la funcion lo necesita para poder
+             * crear un objeto de tipo usuario en este caso
+            */
             $arguments = array($username,$encrytedPassword,$typeCount);
             if($this->service->create($arguments)){
-                $this->returnResponse('SUCESS_RESPONSE',"An user has been created");
+                $this->returnResponse('SUCESS_RESPONSE',"An user has been created.");
             }else{
-                $this->throwError('CREATED_ERROR',"An has been ocurred to create the object");
+                $this->throwError('CREATED_ERROR',"An has been ocurred to create the object.");
             }
-
         }
 
         public function getUsers(){
+            /**Este método retorna un array de objectos del tipo usuario*/
             $usuarios = $this->service->getAll();
             $this->returnResponse('SUCCES_RESPONSE',$usuarios);
         }
 
-        public function updateUser(){}
+        public function updateUser(){
+            $id_usuario = $this->validateParameter('id_usuario',$this->param["id_usuario"],INTEGER);
+            $username = $this->validateParameter('username',$this->param["username"],STRING);
+            $password = $this->validateParameter('password',$this->param["password"],STRING);
+            $typeCount = $this->validateParameter('typeCount',$this->param["typeCount"],INTEGER);
+               
+            $encrytedPassword = Encrytation::encrypt($password,$this->key);
+            $arguments = array($id_usuario,$username,$encrytedPassword,$typeCount);
+            /**La función update utiliza un array con los nuevos argumentos 
+             * y el id del usuario a actualizar
+            */
 
-        public function deleteUser(){}
+            if($this->service->update($arguments,$id_usuario)){
+                $this->returnResponse('SUCESS_RESPONSE',"The user has been updated sucessfully.");
+            }else{
+                $this->throwError('UPDATE_ERROR',"An has been ocurred to update the user.");
+            }
+        }
+
+        public function deleteUser(){
+            $id_usuario = $this->validateParameter('id_usuario',$this->param["id_usuario"],INTEGER);
+            if($this->service->delete("id_usuario",$id_usuario)){
+                $this->returnResponse('SUCESS_RESPONSE',"The user has been deleted sucessfully.");
+            }else{
+                $this->throwError('UPDATE_ERROR',"An has been ocurred to deleted the user.");
+            }
+        }
     }
 ?>
