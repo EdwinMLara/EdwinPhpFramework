@@ -42,8 +42,12 @@
         public function getByField($field,$value){
             /**Regresa una array de un elemento con un arreglo de los datos */
             $typeClass = ucfirst($this->typeService);
-            $arguments = $this->consulta->findByFieldTable($this->typeService,$field,$value);
-            return new $typeClass($arguments[0]);
+            try{
+                $arguments = $this->consulta->findByFieldTable($this->typeService,$field,$value);
+                return new $typeClass($arguments[0]);
+            }catch(Exception $e){
+                echo $e;
+            }          
         }
 
 

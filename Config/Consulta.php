@@ -11,7 +11,7 @@ class Consulta extends ConexionBaseDatos{
             if($table_exists->num_rows > 0){
                 return true;
             }else{
-                return false;
+                throw new Exception("the data table not exists");
             }
         }
     }
@@ -23,7 +23,7 @@ class Consulta extends ConexionBaseDatos{
             if($property_table_exists->num_rows > 0)
                 return true;
             else
-                return false;
+                throw new Exception("The property or column in the ".$table." not exists");
         }else{
             return false;
         }
