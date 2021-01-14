@@ -35,8 +35,12 @@
             return $this->consulta->updateByTable($this->typeService,$object,$id);  
         }
 
-        public function delete($id){
-            return $this->consulta->deleteByTable($this->typeService,$id);
+        public function delete($field,$id){
+            try{
+                return $this->consulta->deleteByTable($this->typeService,$field,$id);
+            }catch(Exception $e){
+                echo $e;
+            }
         }
 
         public function getByField($field,$value){
