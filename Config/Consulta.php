@@ -35,7 +35,7 @@ class Consulta extends ConexionBaseDatos{
     }
 
     public function insertByTable($table,$obj){
-        if($this->tableExists($table,$obj)){
+        if($this->tableExists($table)){
             $query = "INSERT INTO ".$this->deleteEspecialCharacters($table);
             $query_properties = " (";
             $query_values = "(";
@@ -60,30 +60,36 @@ class Consulta extends ConexionBaseDatos{
     }
 
     public function updateByTable($table,$obj,$id){
-        $query = "UPDATE ".$this->deleteEspecialCharacters($table)." SET ";
-        $where = "WHERE ";
-        $con = 0;
-        foreach($obj as $property => $value){
-            if($con == 0){
-                $where .= $property." = ".$id;
+        if($this->tableExists($table)){
+            $query = "UPDATE ".$this->deleteEspecialCharacters($table)." SET ";
+            $where = "WHERE ";
+            $con = 0;
+            foreach($obj as $property => $value){
+                if($con == 0){
+                    $where .= $property." = ".$id;
+                    $con++;
+                }
+                $query .= $property." = '".$value."' ,";
             }
-            $query .= $property." = ".$value." ,";
+            $query = substr($query, 0, -1);
+            $query = $query.$where;
+            $this->con->query($query);
+            return ($this->con->affected_rows === 1) ? true : false;
         }
-        $query = substr($query, 0, -1);
-        $query .= $query.$where;
-        $this->con->query($query);
-        
-        return ($this->con->affected_rows() === 1) ? true : false;
     }
 
-    public function deleteByTable($table,$id){
+    public function deleteByTable($table,$nameColumn,$id){
         if($this->tableExists($table)){
-            $query = "DELETE FROM ".$this->deleteEspecialCharacters($table);
-            $query .= " WHERE id=". $this->deleteEspecialCharacters($id);
-            $query .= " LIMIT 1";
-            $this->con->query($query);
-            
-            return ($this->con->affected_rows() === 1) ? true : false;
+            if($this->propertyTableExists($table,$field)){
+                $query = "DELETE FROM ".$this->deleteEspecialCharacters($table);
+                $query .= " WHERE ".$this->deleteEspecialCharacters($nameColumn)."= ".$this->deleteEspecialCharacters($id);
+                $query .= " LIMIT 1";
+                $this->con->query($query);
+                
+                return ($this->con->affected_rows === 1) ? true : false;
+            }else{
+                return null;
+            }
         }
     }
 
@@ -98,8 +104,6 @@ class Consulta extends ConexionBaseDatos{
             }else{
                 return null;
             }
-            
-            
         }
     }
 }
